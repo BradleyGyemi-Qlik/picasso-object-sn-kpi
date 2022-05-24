@@ -16,12 +16,12 @@ const calculateSizes = (rect, renderer, string, isName) => {
   let computed = renderer.measureText({
     fontSize: `${predicted}px`,
     text: string,
-    fontFamily: 'Arial',
   });
   let ratioX = computed.width / desiredRect.width;
   let ratioY = computed.height / desiredRect.height;
 
-  let optimal = ratioX < 1
+  let optimal =
+    ratioX < 1
       ? Math.min(rect.height / 4, predicted * ratioX)
       : Math.min(rect.height / 4, predicted / ratioX);
 
@@ -31,13 +31,14 @@ const calculateSizes = (rect, renderer, string, isName) => {
   computed = renderer.measureText({
     fontSize: fontSize,
     text: string,
-    fontFamily: 'Arial',
   });
   ratioX = computed.width / desiredRect.width;
   ratioY = computed.height / desiredRect.height;
 
   x = (rect.width - computed.width) / 2;
-  y = isName ? rect.height / 3 : (rect.height * 2 / 3);
+  y = isName
+    ? (rect.height * 1) / 3 + computed.height / 2.5
+    : (rect.height * 2) / 3 + computed.height / 2.5;
 
   return {
     computed,
@@ -107,7 +108,7 @@ picasso.chart({
       {
         type: 'customKPI',
         name: 'My Title',
-        value: '751.1',
+        value: '751.15234634764794746234535',
       },
     ],
   },
@@ -136,7 +137,7 @@ picasso.chart({
       {
         type: 'customKPI',
         name: 'My Title is getting longer',
-        value: '751.1',
+        value: '7',
         showLogs: true,
       },
     ],
