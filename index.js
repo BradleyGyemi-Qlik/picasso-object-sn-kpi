@@ -16,6 +16,7 @@ const calculateSizes = (rect, renderer, string, isName) => {
   let computed = renderer.measureText({
     fontSize: `${predicted}px`,
     text: string,
+    fontFamily: 'Arial',
   });
   let ratioX = computed.width / desiredRect.width;
   let ratioY = computed.height / desiredRect.height;
@@ -31,6 +32,7 @@ const calculateSizes = (rect, renderer, string, isName) => {
   computed = renderer.measureText({
     fontSize: fontSize,
     text: string,
+    fontFamily: 'Arial',
   });
   ratioX = computed.width / desiredRect.width;
   ratioY = computed.height / desiredRect.height;
@@ -56,6 +58,7 @@ const calculateTitleDims = (rect, renderer, string) => {
   let computed = renderer.measureText({
     fontSize,
     text: string,
+    fontFamily: 'Arial',
   });
   if (computed.width / rect.width > 0.45) {
     fontSize = `${fontNum / 2}px`;
@@ -96,6 +99,7 @@ const customKPI = () => ({
         fontSize: nameObj.fontSize,
         x: nameObj.x,
         y: nameObj.y,
+        fontFamily: 'Arial',
       });
     }
     if (value !== undefined) {
@@ -106,6 +110,7 @@ const customKPI = () => ({
         fontSize: valueObj.fontSize,
         x: valueObj.x,
         y: valueObj.y,
+        fontFamily: 'Arial',
       });
     }
     if (title !== undefined) {
@@ -116,6 +121,7 @@ const customKPI = () => ({
         fontSize: titleObj.fontSize,
         x: titleObj.x,
         y: titleObj.y,
+        fontFamily: 'Arial',
       });
     }
     if (subtitle !== undefined) {
@@ -126,6 +132,7 @@ const customKPI = () => ({
         fontSize: subtitleObj.fontSize,
         x: subtitleObj.x,
         y: subtitleObj.y,
+        fontFamily: 'Arial',
       });
     }
     if (footnote !== undefined) {
@@ -144,6 +151,7 @@ const customKPI = () => ({
         fontSize: '14px',
         x: 5,
         y: rect.height - 5,
+        fontFamily: 'Arial',
       });
     }
 
