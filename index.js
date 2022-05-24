@@ -37,8 +37,8 @@ const calculateSizes = (rect, renderer, string, isName) => {
 
   x = (rect.width - computed.width) / 2;
   y = isName
-    ? (rect.height * 1) / 3 + computed.height / 2.5
-    : (rect.height * 2) / 3 + computed.height / 2.5;
+    ? (rect.height * 1) / 3 + computed.height / 4
+    : (rect.height * 2) / 3 + computed.height / 4;
 
   return {
     computed,
@@ -50,17 +50,60 @@ const calculateSizes = (rect, renderer, string, isName) => {
   };
 };
 
+const calculateTitleDims = (rect, renderer, string) => {
+  let fontNum = rect.height / 10;
+  let fontSize = `${fontNum}px`;
+  let computed = renderer.measureText({
+    fontSize,
+    text: string,
+  });
+  if (computed.width / rect.width > 0.45) {
+    fontSize = `${fontNum / 2}px`;
+  }
+  return {
+    fontSize: fontSize,
+    x: 5,
+    y: parseInt(fontSize),
+  };
+};
+const calculateSubtitleDims = (titleObj) => {
+  return {
+    fontSize: `${parseInt(titleObj.fontSize) * 0.75}px`,
+    x: 5,
+    y: titleObj.y * 1.8,
+  };
+};
+
 const customKPI = () => ({
   require: ['chart', 'renderer', 'element'],
   renderer: 'canvas',
   render() {
     const { settings, rect, renderer } = this;
-    const { name, value, nameColor, valueColor, showLogs } = settings;
+    const { name, value, nameColor, valueColor, title, subtitle } = settings;
 
     const nameObj = calculateSizes(rect, renderer, name, true);
     const valueObj = calculateSizes(rect, renderer, value, false);
+    const titleObj = calculateTitleDims(rect, renderer, title);
+    const subtitleObj = calculateSubtitleDims(titleObj);
+
     console.log(nameObj);
     return [
+      {
+        type: 'text',
+        text: title ? title : '',
+        fill: 'black',
+        fontSize: titleObj.fontSize,
+        x: titleObj.x,
+        y: titleObj.y,
+      },
+      {
+        type: 'text',
+        text: subtitle ? subtitle : '',
+        fill: 'gray',
+        fontSize: subtitleObj.fontSize,
+        x: subtitleObj.x,
+        y: subtitleObj.y,
+      },
       {
         type: 'text',
         text: name,
@@ -95,6 +138,8 @@ picasso.chart({
         value: '751.1',
         nameColor: 'red',
         valueColor: 'pink',
+        title: 'First KPI',
+        subtitle: 'This is a test',
       },
     ],
   },
@@ -109,6 +154,8 @@ picasso.chart({
         type: 'customKPI',
         name: 'My Title',
         value: '751.15234634764794746234535',
+        title: 'Second KPI',
+        subtitle: 'This is a test',
       },
     ],
   },
@@ -123,7 +170,8 @@ picasso.chart({
         type: 'customKPI',
         name: 'M',
         value: '751.1',
-        showLogs: true,
+        title: 'Third KPI',
+        subtitle: 'This is a test',
       },
     ],
   },
@@ -138,7 +186,8 @@ picasso.chart({
         type: 'customKPI',
         name: 'My Title is getting longer',
         value: '7',
-        showLogs: true,
+        title: 'Third KPI',
+        subtitle: 'This is a test',
       },
     ],
   },
