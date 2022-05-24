@@ -7,8 +7,8 @@ const calculateSizes = (rect, renderer, string, isName) => {
   let fontSize, x, y;
 
   // add some padding
-  desiredRect.width -= 30;
-  desiredRect.height -= 30;
+  desiredRect.width -= 20;
+  desiredRect.height -= 20;
 
   // generated a predicted optimal size based on rect area
   const A = desiredRect.width * desiredRect.height;
@@ -22,8 +22,8 @@ const calculateSizes = (rect, renderer, string, isName) => {
 
   let optimal =
     ratioX < 1
-      ? Math.min(rect.height / 4, predicted * ratioX)
-      : Math.min(rect.height / 4, predicted / ratioX);
+      ? Math.min(desiredRect.height / 4, predicted * ratioX)
+      : Math.min(desiredRect.height / 4, predicted / ratioX);
 
   // assign an actual size based on isName or isValue
   fontSize = `${optimal}px`;
@@ -37,8 +37,8 @@ const calculateSizes = (rect, renderer, string, isName) => {
 
   x = (rect.width - computed.width) / 2;
   y = isName
-    ? (rect.height * 1) / 3 + computed.height / 4
-    : (rect.height * 2) / 3 + computed.height / 4;
+    ? ((desiredRect.height + 20) * 1) / 3 + computed.height / 4
+    : ((desiredRect.height + 20) * 2) / 3 + computed.height / 4;
 
   return {
     computed,
@@ -79,48 +79,75 @@ const customKPI = () => ({
   renderer: 'canvas',
   render() {
     const { settings, rect, renderer } = this;
-    const { name, value, nameColor, valueColor, title, subtitle } = settings;
+    const { name, value, nameColor, valueColor, title, subtitle, footnote } =
+      settings;
 
     const nameObj = calculateSizes(rect, renderer, name, true);
     const valueObj = calculateSizes(rect, renderer, value, false);
     const titleObj = calculateTitleDims(rect, renderer, title);
     const subtitleObj = calculateSubtitleDims(titleObj);
 
-    console.log(nameObj);
-    return [
-      {
-        type: 'text',
-        text: title ? title : '',
-        fill: 'black',
-        fontSize: titleObj.fontSize,
-        x: titleObj.x,
-        y: titleObj.y,
-      },
-      {
-        type: 'text',
-        text: subtitle ? subtitle : '',
-        fill: 'gray',
-        fontSize: subtitleObj.fontSize,
-        x: subtitleObj.x,
-        y: subtitleObj.y,
-      },
-      {
+    let renderObj = [];
+    if (name !== undefined) {
+      renderObj.push({
         type: 'text',
         text: name,
         fill: nameColor ? nameColor : 'gray',
         fontSize: nameObj.fontSize,
         x: nameObj.x,
         y: nameObj.y,
-      },
-      {
+      });
+    }
+    if (value !== undefined) {
+      renderObj.push({
         type: 'text',
         text: value,
         fill: valueColor ? valueColor : 'blue',
         fontSize: valueObj.fontSize,
         x: valueObj.x,
         y: valueObj.y,
-      },
-    ];
+      });
+    }
+    if (title !== undefined) {
+      renderObj.push({
+        type: 'text',
+        text: title ? title : '',
+        fill: 'black',
+        fontSize: titleObj.fontSize,
+        x: titleObj.x,
+        y: titleObj.y,
+      });
+    }
+    if (subtitle !== undefined) {
+      renderObj.push({
+        type: 'text',
+        text: subtitle ? subtitle : '',
+        fill: 'gray',
+        fontSize: subtitleObj.fontSize,
+        x: subtitleObj.x,
+        y: subtitleObj.y,
+      });
+    }
+    if (footnote !== undefined) {
+      renderObj.push({
+        type: 'rect',
+        fill: '#EEEEEE',
+        x: 0,
+        y: rect.height - 22,
+        width: rect.width - 2,
+        height: 20,
+      });
+      renderObj.push({
+        type: 'text',
+        text: footnote ? footnote : '',
+        fill: 'black',
+        fontSize: '14px',
+        x: 5,
+        y: rect.height - 5,
+      });
+    }
+
+    return renderObj;
   },
 });
 
@@ -140,6 +167,7 @@ picasso.chart({
         valueColor: 'pink',
         title: 'First KPI',
         subtitle: 'This is a test',
+        footnote: 'Foot note',
       },
     ],
   },
